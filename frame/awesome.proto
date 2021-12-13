@@ -1,0 +1,33 @@
+// awesome.proto
+package awesomepackage;
+syntax = "proto3";
+
+message stringMessage {
+    string type = 1; // becomes awesomeField;
+    string message = 2;
+    repeated int32 locate = 3; 
+    message sdp {
+        string type = 1;
+        string sdp = 2;
+    }
+    sdp offer = 4;
+    sdp answer = 5; 
+    ice ice = 6;
+}
+
+message ice {
+    string address = 1;
+    string candidate = 2;
+    string component = 3;
+    string foundation = 4;
+    int32 port = 5;
+    int32 priority = 6;
+    string protocol = 7;
+    int32 relatedPort = 8;
+    string relatedAddress =9;
+    int32 sdpMLineIndex = 10;
+    int32 sdpMid = 11;
+    string tcpType = 12;
+    string type = 13;
+    string usernameFragment = 14;
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="initial-scale=1"/>
+  <title>物体追踪</title>
+  <link rel="stylesheet" type="text/css" href="/styles.css">
+  
+</head>
+<body>
+  <div class="container center">
+    <button id='oval'>椭圆</button>
+    <button id='rectangle'>矩形</button>
+    <!-- <button id='arrow'>箭头</button> -->
+    <video style="display:none" controls muted width="640" height="480"></video>
+  	<!-- <video style="display:none"></video> -->
+    <canvas id="canvas" width="640" height="480" ></canvas>
+    <canvas id="canvasOutput" width="640" height="480" ></canvas>
+  </div>  
+  <script src="../opencv_4.5.4.js" /**onload="openCvReady();"*/ type="text/javascript"></script>
+  <script src="//cdn.rawgit.com/dcodeIO/protobuf.js/6.11.2/dist/protobuf.js"></script>
+  <script type="text/javascript" src="./socket.js"></script>
+ 
+</body>
+</html>
