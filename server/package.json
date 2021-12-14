@@ -1,0 +1,17 @@
+{
+  "name": "choose",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --harmony-top-level-await index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "protobufjs": "^6.11.2",
+    "uWebSockets.js": "file:uWebSockets.js-20.4.0.tar.gz"
+  }
+}

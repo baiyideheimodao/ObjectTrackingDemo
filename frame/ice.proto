@@ -1,0 +1,19 @@
+package icepackage;
+syntax = "proto3";
+
+message ice {
+    string address = 1;
+    string candidate = 2;
+    string component = 3;
+    string foundation = 4;
+    int32 port = 5;
+    int32 priority = 6;
+    string protocol = 7;
+    int32 relatedPort = 8;
+    string relatedAddress =9;
+    int32 sdpMLineIndex = 10;
+    int32 sdpMid = 11;
+    string tcpType = 12;
+    string type = 13;
+    string usernameFragment = 14;
+}
