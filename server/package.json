@@ -12,6 +12,6 @@
   "license": "ISC",
   "dependencies": {
     "protobufjs": "^6.11.2",
-    "uwebsockets.js": "^19.0.0-docs"
+    "uWebSockets.js": "file:uWebSockets.js-20.4.0.tar.gz"
   }
 }

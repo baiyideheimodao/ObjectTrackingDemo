@@ -1,7 +1,7 @@
-import u from 'uwebsockets.js';
+import u from 'uWebSockets.js';
 import protobuf from 'protobufjs'
-import { config } from './config.js';
-
+import  { config }  from './config.js';
+console.log(config)
 let stringMessage = protobuf.loadSync('../frame/awesome.proto').lookupType('awesomepackage.stringMessage');
 // stringMessage
 let video;
@@ -9,9 +9,10 @@ let coordinate = false;
 let lastF = false;
 let track = false;
 let websocket = new Map();
-u.App()
-.addServerName("marketing.vrmage.com")
-.ws('/*', {
+u.SSLApp({
+  key_file_name:'/usr/local/nginx/cert/6177258_marketing.vrmage.com.key',
+  cert_file_name:'/usr/local/nginx/cert/6177258_marketing.vrmage.com.pem'
+}).ws('/*', {
     //设置socket长度
     maxPayloadLength: 51200,
     open: (ws) => {
@@ -28,7 +29,7 @@ u.App()
         switch (data.type) {
             case 'locate':
                 coordinate = data.locate;
-                // console.log('data:', data, coordinate);
+                console.log('data:', data, coordinate);
                 websocket.get('frame').send(message,isBinary);
                 break;
             case 'id':
@@ -61,6 +62,3 @@ u.App()
         console.log(`Listening to port ${config.socketPort}`);
     }
 });
-
-console.log(u.App().addServerName("localhost")
-.ws)
