@@ -10,7 +10,7 @@ let context = {};
 let draw_status = END;
 let p = [];
 let list = new Set;
-let socket = new WebSocket(`ws://localhost:5002`)
+let socket = new WebSocket(`wss://192.168.31.175:5004`)//marketing.vrmage.com:5004`)
 let video = document.getElementsByTagName('video')[0];
 socket.binaryType = 'arraybuffer';
 /**
@@ -52,7 +52,7 @@ socket.onopen = function () {
 		socket.binaryType = 'arraybuffer';
 		socket.send(stringMessage.encode(frameid).finish());
 	})
-	sendStream(pc);
+        sendStream(pc);
 	console.log('open');
 }
 // socket.send()
@@ -63,8 +63,8 @@ function takepicture(video) {
 			canvas.width = width;
 			canvas.height = height;
 			context.drawImage(video, 0, 0, width, height);
-			point1 && oval(point1,point2);
-            context.stroke();
+                        point1 && oval(point1,point2);
+                        context.stroke();
 		}
 	}
 }
@@ -75,16 +75,15 @@ var pc = new RTCPeerConnection();
  * @param {RTCPeerConnection} PeerConnection
 */
 async function sendStream(PeerConnection) {
-	const localStream = await window.navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+	const localStream = await window.navigator.mediaDevices.getUserMedia({ video: {facingMode:'environment'}, audio: false });
 	video.srcObject = localStream;
 	video.onloadedmetadata = e => {
-		let promise = video.play();
-		if (promise !== undefined) {
-			promise.catch(error => {
-				// Auto-play was prevented
-			}).then(() => {
-				// Auto-play started
-			});
+		video.muted = true;
+                let promise = video.play();
+                if(promise !== undefined){
+		  promise.catch(error=>{
+		    console.log(error)
+		}).then(()=>console.log('ok'));
 		}
 		setInterval(takepicture(video), 1000 / 10)
 	}
@@ -120,7 +119,7 @@ async function sendStream(PeerConnection) {
 	socket.send(sdpbuffer);
 
 }
-
+//sendStream(pc);
 socket.onmessage = function (event) {
 	let message = stringMessage.decode(new Uint8Array(event.data));
 	switch (message.type) {
@@ -128,7 +127,6 @@ socket.onmessage = function (event) {
 			p = message.locate;
 			point1 = [p[0], p[1]];
 			point2 = [p[2], p[3]];
-
 			break;
 		case 'answer':
 			console.log('answer', message)

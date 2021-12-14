@@ -1,3 +1,0 @@
-*.js linguist-vendored
-*.pro linguist-vendored
-src/* linguist-vendored=false
