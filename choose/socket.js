@@ -3,8 +3,7 @@ const END = 1;
 const HALFWAY = 0.5;
 let i = 0;
 let point1, point2;
-//控制是否绘制椭圆的开关，防止出现重影
-let on_off = false;
+
 let draw_status = END;
 let stringMessage;
 let p;
@@ -17,6 +16,104 @@ localvideo.muted = true;
 let width = 640;
 let height = 480;
 let locate;
+
+
+let paintShape;
+let sym;
+
+
+
+class trackNow {
+    constructor(sym, point1, point2) {
+        blueprintSet.set(sym, [point1, point2]);
+        this.serial = blueprintSet.size;
+        let coordinate = [
+            ...point1,
+            point2[0] - point1[0],
+            point2[1] - point1[1]
+        ];
+        let cap = new cv.VideoCapture(video);
+        console.log(video, video.height, video.width);
+        let frame = new cv.Mat(video.height, video.width, cv.CV_8UC4);
+        cap.read(frame);
+        console.log('coordinate:=====', coordinate);
+        let trackWindow = new cv.Rect(...coordinate);
+        console.log('trackWindow', trackWindow);
+        let roi = frame.roi(trackWindow);
+        console.log('cv====', frame, trackWindow, roi);
+        let hsvRoi = new cv.Mat();
+        cv.cvtColor(roi, hsvRoi, cv.COLOR_RGBA2RGB);
+        cv.cvtColor(hsvRoi, hsvRoi, cv.COLOR_RGB2HSV);
+        let mask = new cv.Mat();
+        let lowScalar = new cv.Scalar(30, 30, 0);
+        let highScalar = new cv.Scalar(180, 180, 180);
+        let low = new cv.Mat(hsvRoi.rows, hsvRoi.cols, hsvRoi.type(), lowScalar);
+        let high = new cv.Mat(hsvRoi.rows, hsvRoi.cols, hsvRoi.type(), highScalar);
+        cv.inRange(hsvRoi, low, high, mask);
+        let roiHist = new cv.Mat();
+        let hsvRoiVec = new cv.MatVector();
+        hsvRoiVec.push_back(hsvRoi);
+        cv.calcHist(hsvRoiVec, [0], mask, roiHist, [180], [0, 180]);
+        cv.normalize(roiHist, roiHist, 0, 255, cv.NORM_MINMAX);
+
+        // delete useless mats.
+        roi.delete(); hsvRoi.delete(); mask.delete(); low.delete(); high.delete(); hsvRoiVec.delete();
+
+        // Setup the termination criteria, either 10 iteration or move by atleast 1 pt
+        let termCrit = new cv.TermCriteria(cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 1);
+
+        let hsv = new cv.Mat(video.height, video.width, cv.CV_8UC3);
+        let hsvVec = new cv.MatVector();
+        hsvVec.push_back(hsv);
+        let dst = new cv.Mat();
+        let trackBox = null;
+
+        const FPS = 30;
+        let processVideo = ()=>{
+            try {
+                // if (!streaming) {
+                //     // clean and stop.
+                //     frame.delete(); dst.delete(); hsvVec.delete(); roiHist.delete(); hsv.delete();
+                //     return;
+                // }
+                let begin = Date.now();
+
+                // start processing.
+                cap.read(frame);
+                cv.cvtColor(frame, hsv, cv.COLOR_RGBA2RGB);
+                cv.cvtColor(hsv, hsv, cv.COLOR_RGB2HSV);
+                cv.calcBackProject(hsvVec, [0], roiHist, dst, [0, 180], 1);
+
+                // apply camshift to get the new location
+                [trackBox, trackWindow] = cv.CamShift(dst, trackWindow, termCrit);
+                // Draw it on image
+                let pts = cv.rotatedRectPoints(trackBox);
+                console.log('pts:', pts);
+                point1 = Object.values(pts[0]);
+                point2 = Object.values(pts[2]);
+                blueprintSet.set(sym, [point1, point2]);
+                console.log('serial',this.serial)
+                let message = stringMessage.create({
+                    type: 'locate',
+                    shape: paintShape,
+                    serial: this.serial,
+                    locate: [...point1, ...point2]
+                })
+                let buffer = stringMessage.encode(message).finish();
+                console.log(message);
+                socket.send(buffer);
+                // schedule the next one.
+                let delay = 1000 / FPS - (Date.now() - begin);
+                setTimeout(processVideo, delay);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        setTimeout(processVideo, 0);
+
+    }
+}
+
 video.autoplay = true;
 socket.onopen = function () {
     protobuf.load('../frame/awesome.proto').then(function (root) {
@@ -54,14 +151,12 @@ let getpos = procedure => (evt) => {
             draw_status = END;
             let message = stringMessage.create({
                 type: 'locate',
+                shape: paintShape,
+                serial: blueprintSet.size,
                 locate: locate = [...point1, ...point2]
             })
             let buffer = stringMessage.encode(message).finish();
-            startToTrack([
-                ...point1,
-                point2[0]-point1[0],
-                point2[1]-point1[1]
-            ])
+            new trackNow(sym, point1, point2);
             socket.send(buffer);
             break;
         default:
@@ -69,28 +164,7 @@ let getpos = procedure => (evt) => {
     }
     return [x, y];
 }
-/**
- * @param {CanvasRenderingContext2D} context 
-*/
-function oval(p1, p2) {
-    // console.log([...p1, ...p2]);
-    // return
-    context.save();
-    let x = p1[0] - p2[0];
-    let y = p1[1] - p2[1];
-    let r = Math.sqrt(0.5);
-    context.scale(x, y)
-    context.arc(
-        (p1[0] + p2[0]) * 0.5 / x,
-        (p1[1] + p2[1]) * 0.5 / y,
-        r,
-        0,
-        Math.PI * 2,
-        true,
-    )
-    context.restore()
-    return [...p1, ...p2];
-}
+
 canvas.onmousedown = getpos(START)
 canvas.onmousemove = getpos(HALFWAY);
 canvas.onmouseup = getpos(END);
@@ -253,4 +327,16 @@ pc.close = function () {
     });
     return close.apply(this, arguments)
 }
-//[{x,y},{x,y},{x,y},{x,y}]
+
+let button = Array.from(
+    document.getElementsByTagName('button'))
+    .forEach(element => {
+        element.onclick = () => {
+            point1 = false;
+            draw_status = START;
+            paintShape = element.id;
+            sym = Symbol(paintShape);
+            console.log(sym,paintShape);
+        }
+    })
+
