@@ -5,7 +5,7 @@ syntax = "proto3";
 message stringMessage {
     string type = 1; // becomes awesomeField;
     string message = 2;
-    repeated int32 locate = 3; 
+    repeated float locate = 3; 
     message sdp {
         string type = 1;
         string sdp = 2;
@@ -13,6 +13,8 @@ message stringMessage {
     sdp offer = 4;
     sdp answer = 5; 
     ice ice = 6;
+    string shape = 7;
+    int32 serial = 8;
 }
 
 message ice {

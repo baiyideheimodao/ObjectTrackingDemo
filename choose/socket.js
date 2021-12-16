@@ -3,8 +3,7 @@ const END = 1;
 const HALFWAY = 0.5;
 let i = 0;
 let point1, point2;
-//控制是否绘制椭圆的开关，防止出现重影
-let on_off = false;
+
 let draw_status = END;
 let stringMessage;
 let p;
@@ -21,38 +20,13 @@ let locate;
 
 let paintShape;
 let sym;
-/**
- *@description  需要绘制的图形集
-*/
-let blueprintSet = new Map();
 
-/**
- * @description 绘制图形的方法集
-*/
-let markSet = new Map([
-    ['oval', oval],
-    ['rectangle', rectangle],
-    ['arrow', arrow]
-]);
 
-/**
- * @param {Symbol} blueprintType
-*/
-let startDraw = (value, blueprintType) => {
-    console.log('startDraw', value, blueprintSet);
-    markSet.get(blueprintType.description)(...value);
-}
-/**
- * @description 绘制图形集中的所有图形
- * @param {blueprintSet} blueprint 图形集
-*/
-let draw = (blueprint) => {
-    blueprint.forEach(startDraw)
-}
 
 class trackNow {
     constructor(sym, point1, point2) {
         blueprintSet.set(sym, [point1, point2]);
+        this.serial = blueprintSet.size;
         let coordinate = [
             ...point1,
             point2[0] - point1[0],
@@ -95,7 +69,7 @@ class trackNow {
         let trackBox = null;
 
         const FPS = 30;
-        function processVideo() {
+        let processVideo = ()=>{
             try {
                 // if (!streaming) {
                 //     // clean and stop.
@@ -118,11 +92,15 @@ class trackNow {
                 point1 = Object.values(pts[0]);
                 point2 = Object.values(pts[2]);
                 blueprintSet.set(sym, [point1, point2]);
+                console.log('serial',this.serial)
                 let message = stringMessage.create({
                     type: 'locate',
+                    shape: paintShape,
+                    serial: this.serial,
                     locate: [...point1, ...point2]
                 })
                 let buffer = stringMessage.encode(message).finish();
+                console.log(message);
                 socket.send(buffer);
                 // schedule the next one.
                 let delay = 1000 / FPS - (Date.now() - begin);
@@ -174,52 +152,18 @@ let getpos = procedure => (evt) => {
             draw_status = END;
             let message = stringMessage.create({
                 type: 'locate',
+                shape: paintShape,
+                serial: blueprintSet.size,
                 locate: locate = [...point1, ...point2]
             })
             let buffer = stringMessage.encode(message).finish();
             new trackNow(sym, point1, point2);
-            console.log('?????', blueprintSet);
             socket.send(buffer);
             break;
         default:
             break;
     }
     return [x, y];
-}
-/**
- * @description 椭圆
- * @param {CanvasRenderingContext2D} context 
-*/
-function oval(p1, p2) {
-    // console.log([...p1, ...p2]);
-    // return
-    context.moveTo(...p1);
-    context.save();
-    let x = p1[0] - p2[0];
-    let y = p1[1] - p2[1];
-    let r = Math.sqrt(0.5);
-    context.scale(x, y);
-    
-    context.arc(
-        (p1[0] + p2[0]) * 0.5 / x,
-        (p1[1] + p2[1]) * 0.5 / y,
-        r,
-        Math.PI * 2.25,
-        Math.PI * 0.25,
-        true,
-    )
-    context.restore()
-    console.log('p1', p1, p2)
-    // return [...p1, ...p2];
-}
-function rectangle(p1, p2) {
-    context.moveTo(...p1);
-    context.rect(...p1,
-        p2[0] - p1[0],
-        p2[1] - p1[1]
-    );
-}  
-function arrow(p1, p2) {
 }
 canvas.onmousedown = getpos(START)
 canvas.onmousemove = getpos(HALFWAY);
@@ -306,8 +250,7 @@ let button = Array.from(
             draw_status = START;
             paintShape = element.id;
             sym = Symbol(paintShape);
+            console.log(sym,paintShape);
         }
     })
 
-console.log('?????', blueprintSet);
-//[{x,y},{x,y},{x,y},{x,y}]
