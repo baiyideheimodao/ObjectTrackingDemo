@@ -30,7 +30,7 @@ u.SSLApp({
         switch (data.type) {
             case 'locate':
                 coordinate = data.locate;
-                console.log('data:', data, coordinate);
+                console.log('data:', data);
                 websocket.get('frame').send(message,isBinary);
                 break;
             case 'id':
