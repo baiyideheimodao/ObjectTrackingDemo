@@ -130,9 +130,8 @@ let canvas = document.getElementById('canvas');
 let context = canvas.getContext('2d');
 let img = new Image();
 let getpos = procedure => (evt) => {
-    console.log(evt)
-    let x = evt.clientX || evt.pageX;
-    let y = evt.clientY || evt.pageY;
+    let x = evt.clientX || evt.touches[0].pageX;
+    let y = evt.clientY || evt.touches[0].pageY;
     let rect = canvas.getBoundingClientRect();
     x -= rect.left;
     y -= rect.top;
@@ -176,6 +175,7 @@ canvas.addEventListener('touchstart',getpos(START),false);
 canvas.addEventListener('touchend',getpos(END),false);
 canvas.addEventListener('touchmove',getpos(HALFWAY),false);
 
+//RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
 let pc = new RTCPeerConnection();
 
 socket.onmessage = async function (event) {
