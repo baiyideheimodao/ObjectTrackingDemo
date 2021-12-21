@@ -130,8 +130,9 @@ let canvas = document.getElementById('canvas');
 let context = canvas.getContext('2d');
 let img = new Image();
 let getpos = procedure => (evt) => {
-    let x = evt.clientX;
-    let y = evt.clientY;
+    console.log(evt)
+    let x = evt.clientX || evt.pageX;
+    let y = evt.clientY || evt.pageY;
     let rect = canvas.getBoundingClientRect();
     x -= rect.left;
     y -= rect.top;
@@ -172,8 +173,8 @@ canvas.onmouseup = getpos(END);
 
 //添加触摸屏事件
 canvas.addEventListener('touchstart',getpos(START),false);
-canvas.addEventListener('touchend',getpos(HALFWAY),false);
-canvas.addEventListener('touchmove',getpos(END),false);
+canvas.addEventListener('touchend',getpos(END),false);
+canvas.addEventListener('touchmove',getpos(HALFWAY),false);
 
 let pc = new RTCPeerConnection();
 
