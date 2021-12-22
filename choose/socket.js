@@ -8,7 +8,7 @@ let draw_status = END;
 let stringMessage;
 let p;
 let sdp;
-let socket = new WebSocket('wss://192.168.31.175:5004')                                
+let socket = new WebSocket('wss://192.168.31.175:5004')
 let video = document.getElementsByTagName('video')[0];
 const localvideo = document.createElement('video');
 localvideo.autoplay = true;
@@ -69,7 +69,7 @@ class trackNow {
         let trackBox = null;
 
         const FPS = 30;
-        let processVideo = ()=>{
+        let processVideo = () => {
             try {
                 // if (!streaming) {
                 //     // clean and stop.
@@ -92,7 +92,6 @@ class trackNow {
                 point1 = Object.values(pts[0]);
                 point2 = Object.values(pts[2]);
                 blueprintSet.set(sym, [point1, point2]);
-                console.log('serial',this.serial)
                 let message = stringMessage.create({
                     type: 'locate',
                     shape: paintShape,
@@ -132,9 +131,11 @@ let img = new Image();
 let getpos = procedure => (evt) => {
     let x = evt.clientX || evt.touches[0].pageX;
     let y = evt.clientY || evt.touches[0].pageY;
-    let rect = canvas.getBoundingClientRect();
-    x -= rect.left;
-    y -= rect.top;
+    if (x && y) {
+        let rect = canvas.getBoundingClientRect();
+        x -= rect.left;
+        y -= rect.top;
+    }
     switch (procedure) {
         case START:
             draw_status = START;
@@ -171,11 +172,14 @@ canvas.onmousemove = getpos(HALFWAY);
 canvas.onmouseup = getpos(END);
 
 //添加触摸屏事件
-canvas.addEventListener('touchstart',getpos(START),false);
-canvas.addEventListener('touchend',getpos(END),false);
-canvas.addEventListener('touchmove',getpos(HALFWAY),false);
+canvas.addEventListener('touchstart', getpos(START), false);
+canvas.addEventListener('touchend', getpos(END), false);
+canvas.addEventListener('touchmove', getpos(HALFWAY), false);
 
 //RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+if (!RTCPeerConnection) {
+    alert('当前浏览器不支持webRTC，请使用chrome浏览器')
+}
 let pc = new RTCPeerConnection();
 
 socket.onmessage = async function (event) {
@@ -237,7 +241,7 @@ pc.ontrack = event => {
     }
 }
 
-  
+
 
 const { close } = pc;
 pc.close = function () {
@@ -256,7 +260,7 @@ let button = Array.from(
             draw_status = START;
             paintShape = element.id;
             sym = Symbol(paintShape);
-            console.log(sym,paintShape);
+            console.log(sym, paintShape);
         }
     })
 
