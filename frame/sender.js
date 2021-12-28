@@ -16,10 +16,18 @@ socket.binaryType = 'arraybuffer';
 let symList = [];
 
 let canvas = document.getElementById('canvas');
-let width = 640;
-let height = 480;
+let width = screen.width;
+let height = screen.height;
 let stringMessage;
 let iceMessage;
+
+// //录像质量
+// let recorderOptions = {
+// 	audioBitsPerSecond : 128000,
+// 	videoBitsPerSecond : 2500000,
+// 	mimeType : 'video/mp4'
+// }
+
 socket.onopen = function () {
 	protobuf.load("awesome.proto").then(function (root) {
 		stringMessage = root.lookupType("awesomepackage.stringMessage");

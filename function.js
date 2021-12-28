@@ -9,7 +9,8 @@ let blueprintSet = new Map();
 let markSet = new Map([
     ['oval', oval],
     ['rectangle', rectangle],
-    ['arrow', arrow]
+    ['arrow', arrow],
+    ['triangle', triangle]
 ]);
 
 /**
@@ -40,7 +41,7 @@ function oval(p1, p2) {
     let y = p1[1] - p2[1];
     let r = Math.sqrt(0.5);
     context.scale(x, y);
-    
+
     context.arc(
         (p1[0] + p2[0]) * 0.5 / x,
         (p1[1] + p2[1]) * 0.5 / y,
@@ -60,4 +61,29 @@ function rectangle(p1, p2) {
     );
 }
 function arrow(p1, p2) {
+    context.moveTo(...p1);
+    context.lineTo(p1[0] - 5, p1[1]);
+    context.lineTo(p1[0], p1[1] - 5);
+    context.lineTo(p1[0] + 5, p1[1]);
+    context.lineTo(p1[0], p1[1] + 5);
+    context.lineTo(p1[0] - 5, p1[1]);
+    context.lineTo(...p2);
+    context.lineTo(p1[0] - 5, p1[1]);
+    context.lineTo(...p2);
+    context.lineTo(p1[0], p1[1] - 5);
+    context.lineTo(...p2);
+    context.lineTo(p1[0], p1[1] + 5);
+    context.lineTo(...p2);
+    context.lineTo(p1[0] + 5, p1[1]);
+    context.fill();
+    // context.
+}
+
+function triangle(p1, p2) {
+    let top = [(p1[0] + p2[0]) * 0.5, 2 * p1[1] - p2[1]];
+    context.moveTo(...top);
+    let x = (p2[0] - p1[0]) * 0.5;
+    context.lineTo(p1[0] - x, p2[1]);
+    context.lineTo(p2[0] + x, p2[1]);
+    context.closePath()
 }
