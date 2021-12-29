@@ -129,12 +129,14 @@ let canvas = document.getElementById('canvas');
 let context = canvas.getContext('2d');
 let img = new Image();
 let getpos = procedure => (evt) => {
-    let x = evt.clientX || evt.touches[0].pageX;
-    let y = evt.clientY || evt.touches[0].pageY;
-    if (x && y) {
-        let rect = canvas.getBoundingClientRect();
-        x -= rect.left;
-        y -= rect.top;
+    if (procedure !== END) {
+        let x = evt.clientX || evt.touches[0].pageX;
+        let y = evt.clientY || evt.touches[0].pageY;
+        if (x && y) {
+            let rect = canvas.getBoundingClientRect();
+            x -= rect.left;
+            y -= rect.top;
+        }
     }
     switch (procedure) {
         case START:
