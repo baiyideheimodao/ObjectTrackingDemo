@@ -13,8 +13,8 @@ let video = document.getElementsByTagName('video')[0];
 const localvideo = document.createElement('video');
 localvideo.autoplay = true;
 localvideo.muted = true;
-let width = 640;
-let height = 480;
+let width = screen.width;
+let height = screen.height;
 let locate;
 
 

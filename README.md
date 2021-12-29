@@ -1,9 +1,10 @@
+# 物体追踪示例
 
-# 运行环境
+## 运行环境
 
 主分支上的版本适用于macOs，并可以在局域网运行，想要查看适用于可在公网运行的线上版本，请切换到prod分支
 
-# 安装
+## 安装
 
 `git clone https://github.com/baiyideheimodao/ObjectTrackingDemo.git`
 

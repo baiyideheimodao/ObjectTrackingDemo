@@ -9,10 +9,13 @@
 <body>
   <div class="container center">
   	<video style="display:none" muted playsinline  width="640" height="480" ></video>
+    <button id="recording">录制</button>
+    <button id="stop">结束录制</button>
+    <a id='download'>下载录像</a>
   	<!-- <canvas id="canvas" style="display:none"></canvas> -->
-    <canvas id="canvas" ></canvas>
+    <canvas id="canvas"  width="auto" height="auto" ></canvas>
     <canvas id="demo"></canvas>
-  	<canvas id="canvas-face" width="640" height="480"></canvas>
+  	<canvas id="canvas-face" width="auto" height="auto"></canvas>
   </div>
   <script src="../adapter.js"></script>
   <script src="../protobuf_6.11.2.js"></script>
