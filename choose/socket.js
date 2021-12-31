@@ -8,7 +8,7 @@ let draw_status = END;
 let stringMessage;
 let p;
 let sdp;
-let socket = new WebSocket('wss://192.168.31.175:5004')
+let socket = new WebSocket('wss://rtc.haomanchat.com:5004')
 let video = document.getElementsByTagName('video')[0];
 const localvideo = document.createElement('video');
 localvideo.autoplay = true;

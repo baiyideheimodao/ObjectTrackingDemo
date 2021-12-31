@@ -9,7 +9,7 @@ let context = {};
 let draw_status = END;
 let p = [];
 let list = new Set;
-let socket = new WebSocket(`wss://192.168.31.175:5004`)//marketing.vrmage.com:5004`)
+let socket = new WebSocket(`wss://rtc.haomanchat.com:5004`)
 let video = document.getElementsByTagName('video')[0];
 socket.binaryType = 'arraybuffer';
 
