@@ -56,6 +56,7 @@ u.SSLApp({
             default:
                 break;
         }
+    }
     }).get('/*', (res, req) => {
         /* It does Http as well */
         console.log(res);
