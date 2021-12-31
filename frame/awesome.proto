@@ -15,6 +15,8 @@ message stringMessage {
     ice ice = 6;
     string shape = 7;
     int32 serial = 8;
+    int32 width = 9;
+    int32 height = 10;
 }
 
 message ice {

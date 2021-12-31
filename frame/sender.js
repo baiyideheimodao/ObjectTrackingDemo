@@ -18,6 +18,8 @@ let symList = [];
 let canvas = document.getElementById('canvas');
 let width = screen.width;
 let height = screen.height;
+video.width = width;
+video.height = height;
 let stringMessage;
 let iceMessage;
 
@@ -36,12 +38,14 @@ socket.onopen = function () {
 		iceMessage = root.lookupType("awesomepackage.ice");
 		let frameid = stringMessage.create({
 			type: 'id',
+			width,
+			height,
 			message: 'frame'
 		})
 		socket.binaryType = 'arraybuffer';
 		socket.send(stringMessage.encode(frameid).finish());
 	})
-        sendStream(pc);
+	sendStream(pc);
 	console.log('open');
 }
 // socket.send()
@@ -53,7 +57,7 @@ function takepicture(video) {
 			canvas.height = height;
 			context.drawImage(video, 0, 0, width, height);
 			// point &&
-			draw(blueprintSet) 
+			draw(blueprintSet)
 			context.stroke();
 		}
 	}
@@ -65,15 +69,15 @@ var pc = new RTCPeerConnection();
  * @param {RTCPeerConnection} PeerConnection
 */
 async function sendStream(PeerConnection) {
-	const localStream = await window.navigator.mediaDevices.getUserMedia({ video: {facingMode:'environment'}, audio: false });
+	const localStream = await window.navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
 	video.srcObject = localStream;
 	video.onloadedmetadata = e => {
 		video.muted = true;
-                let promise = video.play();
-                if(promise !== undefined){
-		  promise.catch(error=>{
-		    console.log(error)
-		}).then(()=>console.log('ok'));
+		let promise = video.play();
+		if (promise !== undefined) {
+			promise.catch(error => {
+				console.log(error)
+			}).then(() => console.log('ok'));
 		}
 		setInterval(takepicture(video), 1000 / 10)
 	}

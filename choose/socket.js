@@ -13,8 +13,9 @@ let video = document.getElementsByTagName('video')[0];
 const localvideo = document.createElement('video');
 localvideo.autoplay = true;
 localvideo.muted = true;
-let width = screen.width;
-let height = screen.height;
+let width, height;
+// let width = screen.width;
+// let height = screen.height;
 let locate;
 
 
@@ -188,7 +189,12 @@ let pc = new RTCPeerConnection();
 socket.onmessage = async function (event) {
     let message = stringMessage.decode(new Uint8Array(event.data));
     switch (message.type) {
-
+        case 'id':
+            width = message.width;
+            height = message.height;
+            video.width = width;
+            video.height = height;
+            break;
         case 'sdp':
             console.log('sdp', message);
             sdp = message.offer;
