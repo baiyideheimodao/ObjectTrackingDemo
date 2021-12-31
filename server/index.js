@@ -10,9 +10,10 @@ let lastF = false;
 let track = false;
 let websocket = new Map();
 u.SSLApp({
-  key_file_name:'/usr/local/nginx/cert/6177258_marketing.vrmage.com.key',
-  cert_file_name:'/usr/local/nginx/cert/6177258_marketing.vrmage.com.pem'
-}).addServerName("marketing.vrmage.com")
+  key_file_name:'/usr/local/nginx/conf/rtc.haomanchat.com_nginx/rtc.haomanchat.com.key',
+  cert_file_name:'/usr/local/nginx/conf/rtc.haomanchat.com_nginx/rtc.haomanchat.com_bundle.pem'
+})
+//.addServerName("rtc.haomanchat.com")
 .ws('/*', {
     //设置socket长度
     maxPayloadLength: 51200,
