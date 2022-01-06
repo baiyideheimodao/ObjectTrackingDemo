@@ -37,9 +37,6 @@ u.SSLApp({
             case 'id':
                 console.log('id:',data);
                 websocket.set(data.message, ws);
-                if ('frame' === data.message) {
-                    websocket.get('choose').send(message, isBinary);
-                }
                 break;
             case 'sdp':
                 console.log('sdp')
@@ -51,6 +48,9 @@ u.SSLApp({
                 break;
             case 'ice':
                 console.log('ice');
+                websocket.get('choose').send(message,isBinary);
+                break;
+            case 'size':
                 websocket.get('choose').send(message,isBinary);
                 break;
             default:

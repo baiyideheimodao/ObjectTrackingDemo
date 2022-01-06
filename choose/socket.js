@@ -189,7 +189,7 @@ let pc = new RTCPeerConnection();
 socket.onmessage = async function (event) {
     let message = stringMessage.decode(new Uint8Array(event.data));
     switch (message.type) {
-        case 'id':
+        case 'size':
             width = message.width;
             height = message.height;
             video.width = width;

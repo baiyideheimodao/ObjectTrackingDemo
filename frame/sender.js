@@ -18,8 +18,6 @@ let symList = [];
 let canvas = document.getElementById('canvas');
 let width = screen.width;
 let height = screen.height;
-video.width = width;
-video.height = height;
 let stringMessage;
 let iceMessage;
 
@@ -72,6 +70,15 @@ async function sendStream(PeerConnection) {
 	const localStream = await window.navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
 	video.srcObject = localStream;
 	video.onloadedmetadata = e => {
+		width = video.width = video.videoWidth;
+		height = video.height = video.videoHeight;
+		console.log(video.videoHeight,video.videoWidth)
+		let size = stringMessage.create({
+			type:'size',
+			width,
+			height
+		})
+		socket.send(stringMessage.encode(size).finish());
 		video.muted = true;
 		let promise = video.play();
 		if (promise !== undefined) {
