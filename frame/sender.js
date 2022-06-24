@@ -62,7 +62,13 @@ function takepicture(video) {
 }
 
 // navigator.getMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || window.navigator.mediaDevices.getUserMedia);
-var pc = new RTCPeerConnection();
+var configuration = { iceServers: [{
+	urls: "stun:119.45.227.92:3478",
+	username: "baiyideheimodao",
+	credential: "zhuxingyu"
+}]
+};
+var pc = new RTCPeerConnection(configuration);
 /**
  * @param {RTCPeerConnection} PeerConnection
 */

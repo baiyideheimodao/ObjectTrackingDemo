@@ -184,7 +184,13 @@ canvas.addEventListener('touchmove', getpos(HALFWAY), false);
 if (!RTCPeerConnection) {
     alert('当前浏览器不支持webRTC，请使用chrome浏览器')
 }
-let pc = new RTCPeerConnection();
+var configuration = { iceServers: [{
+	urls: "stun:119.45.227.92:3478",
+	username: "baiyideheimodao",
+	credential: "zhuxingyu"
+}]
+};
+let pc = new RTCPeerConnection(configuration);
 
 socket.onmessage = async function (event) {
     let message = stringMessage.decode(new Uint8Array(event.data));
